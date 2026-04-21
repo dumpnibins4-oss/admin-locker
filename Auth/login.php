@@ -79,10 +79,9 @@
                 }).fire({
                     icon: "success",
                     title: data.message
-                })
-                setTimeout(() => {
+                }).then(() => {
                     window.location.href = "../index.php"
-                }, 1500)
+                })
             } else {
                 Swal.fire({
                     icon: "error",

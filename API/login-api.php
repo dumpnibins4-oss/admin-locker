@@ -24,25 +24,19 @@
                 $restriction = $stmt->fetch();
                 if (password_verify($password, $user['password'])) {
                     if ($restriction) {
-                        $_SESSION['user'] = $restriction;
-
                         $stmt = $conn->prepare("SELECT * FROM [LRNPH_OJT].[dbo].[lrn_master_list] WHERE BiometricsID = ?");
                         $stmt->execute([$user['username']]);
                         $lrn = $stmt->fetch();
-
+                        
                         if ($lrn) {
                             $_SESSION['lrn_master_list'] = $lrn;
+                            $_SESSION['user'] = $user;
+                            $_SESSION['restriction'] = $restriction;
                         }
                         
                         http_response_code(200);
                         echo json_encode([
                             'success' => true,
-                            'user' => [
-                                'username' => $user['username'],
-                                'role' => $user['role'],
-                                'empcode' => $user['empcode'],
-                                'department' => $user['department'],
-                            ],
                             'message' => 'Signed in successfully'
                         ]);
                     }
