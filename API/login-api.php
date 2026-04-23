@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include '../DB_Scripts/conn.php';
+    include '../Connections/conn.php';
     header('Content-Type: application/json');
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
