@@ -14,7 +14,9 @@
             <h1 class="text-4xl font-bold text-pink-500 fixed top-5 left-5">LA ROSE NOIRE</h1>
             <div class="w-[450px] h-[500px] rounded-4xl bg-[#222222] shadow-md border border-[#333333] px-10 py-8 flex flex-col items-center justify-around">
                 <div class="w-full h-auto flex flex-col items-center justify-center">
-                    <i class="fa-solid fa-shield text-4xl text-blue-500"></i>
+                    <div class="w-14 h-14 rounded-full bg-zinc-600 flex items-center justify-center">
+                        <i class="fa-solid fa-lock text-xl text-yellow-400"></i>
+                    </div>
                 </div>
                 <div class="w-full h-auto flex flex-col items-center justify-start">
                     <h2 class="text-2xl font-medium text-white">Admin Locker</h2>
@@ -34,7 +36,7 @@
                             </button>
                         </div>
                     </div>
-                    <button type="submit" class="w-full h-12 rounded-xl bg-blue-500 text-white text-lg font-semibold cursor-pointer hover:bg-blue-600 hover:scale-105 transition-all">Login</button>
+                    <button id="login-btn" type="submit" class="w-full h-12 rounded-xl bg-yellow-600 text-white text-lg font-semibold cursor-pointer hover:bg-yellow-700 hover:scale-105 transition-all">Login</button>
                 </form>
                 <hr class="w-full h-auto border border-zinc-600 rounded-full" />
                 <p class="text-sm text-gray-400 font-medium">Don't have an account? Contact your administrator.</p>
@@ -60,8 +62,13 @@
 
     document.getElementById('login-form').addEventListener("submit", async function(e) {
         e.preventDefault()
-        
+
+        const btn = document.getElementById("login-btn")
+
         try {
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Logging in..."
+            btn.disabled = true
+
             const res = await fetch("../API/login-api.php", { method: "POST", body: new FormData(this) })
             const data = await res.json()
 
@@ -89,9 +96,21 @@
                     text: data.message,
                     confirmButtonColor: "#3b82f6"
                 })
+
+                btn.innerHTML = "Login"
+                btn.disabled = false
             }
         } catch (err) {
             console.log(err)
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "An error occurred while logging in.",
+                confirmButtonColor: "#3b82f6"
+            })
+
+            btn.innerHTML = "Login"
+            btn.disabled = false
         }
     })
 </script>

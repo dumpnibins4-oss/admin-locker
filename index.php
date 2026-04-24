@@ -47,7 +47,7 @@
         ],
     ];
 
-    $valid_routes = array_column($routes, 'route');
+    $valid_routes = array_merge(array_column($routes, 'route'), array_column($common_routes, 'route'));
     $current_route = $_GET['page'] ?? 'Pages/Dashboard.php';
 
     if (!in_array($current_route, $valid_routes)) {
@@ -74,8 +74,8 @@
                 <div class="w-full h-full flex flex-col items-center justify-between rounded-3xl bg-zinc-900 backdrop-blur-md border border-black/10 shadow-md px-3 py-5">
                     <!-- Top Nav -->
                     <div class="flex flex-col items-center justify-start w-full h-auto gap-5">
-                        <div class="flex flex-row items-center justify-center w-full h-auto">
-                            <i class="fa-solid fa-shield text-4xl text-blue-400"></i>
+                        <div class="flex flex-row items-center justify-center w-full aspect-square rounded-full bg-zinc-600">
+                            <i class="fa-solid fa-lock text-xl text-yellow-400"></i>
                         </div>
                         <hr class="w-full border rounded-full border-zinc-200" />
                         <div class="flex flex-col items-center justify-start w-full h-auto gap-2">
@@ -243,6 +243,11 @@
         const clickedFx = clickedBtn.querySelector('.hover-fx');
         if (clickedFx) clickedFx.classList.add('hidden');
 
+        // Update the URL so the route persists on refresh
+        const url = new URL(window.location);
+        url.searchParams.set('page', route);
+        window.history.pushState({ route: route }, '', url);
+
         // Show loading state
         document.getElementById('main-content').innerHTML = `
             <div class="w-full h-full flex items-center justify-center">
@@ -285,9 +290,26 @@
         }
     }
 
-    // Load default page on start
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (event) => {
+        const route = event.state?.route || new URLSearchParams(window.location.search).get('page');
+        if (route) {
+            const btn = document.querySelector(`[data-route="${route}"]`);
+            if (btn) navigateTo(route, btn);
+        }
+    });
+
+    // Load the correct page on start (from URL or default to first route)
     document.addEventListener('DOMContentLoaded', () => {
-        const defaultBtn = document.querySelector('[data-route]');
-        if (defaultBtn) navigateTo(defaultBtn.dataset.route, defaultBtn);
+        const urlRoute = new URLSearchParams(window.location.search).get('page');
+        const targetRoute = urlRoute || '<?php echo $current_route ?>';
+        const btn = document.querySelector(`[data-route="${targetRoute}"]`);
+        if (btn) {
+            navigateTo(targetRoute, btn);
+        } else {
+            // Fallback to first button if route not found in sidebar
+            const defaultBtn = document.querySelector('[data-route]');
+            if (defaultBtn) navigateTo(defaultBtn.dataset.route, defaultBtn);
+        }
     });
 </script>
