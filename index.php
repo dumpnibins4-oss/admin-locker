@@ -146,10 +146,10 @@
                         <!-- Notifications -->
                         <!-- User Card -->
                         <div class="flex flex-row items-center justify-end w-full h-auto mb-4 gap-2">
-                            <button class="flex items-center justify-center w-13 aspect-square bg-zinc-800 hover:bg-zinc-700 hover:scale-110 hover:shadow-md shadow-black/20 rounded-full transition-all text-white cursor-pointer">
+                            <button class="flex items-center justify-center w-13 aspect-square bg-white border border-black/10 shadow-sm rounded-full hover:bg-zinc-100 hover:scale-110 hover:shadow-md shadow-black/20 rounded-full transition-all text-black/70 cursor-pointer">
                                 <i class="fa-regular fa-bell text-lg"></i>
                             </button>
-                            <div class="flex items-center gap-3 bg-zinc-800 border border-black/10 shadow-sm rounded-2xl px-3 py-2 group cursor-default">
+                            <div class="flex items-center gap-3 bg-white border border-black/10 shadow-sm rounded-2xl px-3 py-2 group cursor-default">
                                 <!-- Avatar with status dot -->
                                 <div class="relative">
                                     <div class="w-9 h-9 rounded-xl overflow-hidden ring-2 ring-blue-500/20">
@@ -169,22 +169,22 @@
 
                                 <!-- Name & Role -->
                                 <div class="flex flex-col leading-tight">
-                                    <p class="text-sm font-semibold text-white tracking-tight">
+                                    <p class="text-sm font-semibold text-black tracking-tight">
                                         <?php echo $_SESSION['lrn_master_list']['FirstName'] . ' ' . $_SESSION['lrn_master_list']['LastName'] ?>
                                     </p>
                                     <div class="flex items-center gap-1">
                                         <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                                        <p class="text-xs text-white/70 font-medium"><?php echo $_SESSION['restriction']['role'] ?></p>
+                                        <p class="text-xs text-black/70 font-medium"><?php echo $_SESSION['restriction']['role'] ?></p>
                                     </div>
                                 </div>
 
                                 <!-- Divider -->
-                                <div class="w-px h-7 bg-zinc-100 mx-1"></div>
+                                <div class="w-px h-7 border border-zinc-400 rounded-full mx-1"></div>
 
                                 <!-- Logout button -->
                                 <button 
                                     onclick="confirmLogout()"
-                                    class="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-red-500 text-white/70 hover:text-white transition-all cursor-pointer"
+                                    class="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-red-500 text-zinc-800/70 hover:text-white transition-all cursor-pointer"
                                     title="Logout"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
@@ -194,7 +194,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="main-content" class="w-full flex-1 overflow-y-auto custom-scrollbar">
+                    <div id="main-content" class="w-full flex-1 overflow-y-auto custom-scrollbar px-5">
                         <!-- Content loads here -->
                     </div>
                 </div>
@@ -270,10 +270,14 @@
 
             document.getElementById('main-content').innerHTML = bodyContent;
 
+            // Remove previously injected page scripts
+            document.querySelectorAll('script[data-page-script]').forEach(s => s.remove());
+
             // Re-run any inline scripts from the loaded page
             document.getElementById('main-content').querySelectorAll('script').forEach(oldScript => {
                 const newScript = document.createElement('script');
                 newScript.textContent = oldScript.textContent;
+                newScript.setAttribute('data-page-script', 'true');
                 document.body.appendChild(newScript);
                 oldScript.remove();
             });
